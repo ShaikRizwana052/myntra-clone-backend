@@ -4,6 +4,7 @@ const app = express();
 const userRouter = require("./routes/userRoutes");
 const productRouter = require("./routes/productRouters");
 const categoryRouter = require("./routes/categoryRouters");
+const cartRouter = require("./routes/catrRouters");
 const { authentication } = require("./middelwares/authentication");
 const cors = require("cors");
 
@@ -21,6 +22,7 @@ app.use("/user", userRouter);
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use(authentication);
+app.use("/cart", cartRouter);
 
 PORT = 9091;
 app.listen(PORT, async () => {

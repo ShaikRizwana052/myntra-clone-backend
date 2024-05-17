@@ -1,10 +1,17 @@
 const USER_MODEL = require("../model/userModel");
-const bcrypt=require("bcrypt");
-const jwt=require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports.signup = async (req, res) => {
   try {
     const { email, password } = req.body;
+    // console.log("body", req.body);
+    if (!email || !password) {
+      return res.status(404).json({
+        status: false,
+        message: "Please give email and password",
+      });
+    }
     const isUser = await USER_MODEL.find({ email });
     if (isUser.length > 0) {
       return res.status(400).json({
@@ -32,9 +39,9 @@ module.exports.signup = async (req, res) => {
     });
   } catch (error) {
     console.log("error", error);
-    return res.status(401).json({
+    return res.status(500).json({
       status: false,
-      message: "user not found",
+      message: error.message,
     });
   }
 };
@@ -44,7 +51,7 @@ module.exports.login = async (req, res) => {
     const { email, password } = req.body;
     const isLogin = await USER_MODEL.findOne({ email });
     if (!isLogin) {
-      return res.status(400).json({
+      return res.status(404).json({
         status: false,
         message: "user not found,please login first",
       });
@@ -57,12 +64,13 @@ module.exports.login = async (req, res) => {
       });
     }
     let secert = process.env.JWT_LOGIN || "NotFound";
-    let data = { id: isLogin._id, name: isLogin.name, role: isLogin.role };
+    let data = { id: isLogin.id, name: isLogin.name, role: isLogin.role };
     const Token = jwt.sign(data, secert);
     res.status(200).json({
       status: true,
       message: " user login successfully",
       Token,
+      name: isLogin?.name
     });
   } catch (error) {
     console.log("error", error);

@@ -19,9 +19,13 @@ const userSchema = mongoose.Schema(
       trim: true,
       default: "user",
     },
-    age: {
+    phoneNumber: {
       type: Number,
       default: 0,
+    },
+    termsAccepted: {
+      type: Boolean,
+      default: false,
     },
     isDeleted: {
       type: Boolean,
